@@ -1,3 +1,11 @@
+String.prototype.cleanDate = function () {
+	let date = new Date(this);
+	return date.toLocaleDateString();
+};
+Object.prototype.getVenue = function () {
+	return this.venue.venue ? this.venue.venue : this.is_virtual ? "Virtual" : "No venue";
+};
+
 async function getEvents(url) {
 	let response = await fetch(url);
 
@@ -22,10 +30,9 @@ async function getEvents(url) {
 
 	eventsToShow.forEach((event) => {
 		let card = document.createElement("div");
+		card.dataset.id = event.id;
 		card.className = "card";
-		let date = new Date(event.date);
-		let venue = event.venue.venue ? event.venue.venue : event.is_virtual ? "Virtual" : "No venue";
-		card.innerHTML = `<div><h2>${event.title}</h2><p>Date: ${date.toLocaleDateString()}</p><p>Lieu: ${venue}</p></div>`;
+		card.innerHTML = `<div><h2>${event.title}</h2><p>Date: ${event.date.cleanDate()}</p><p>Lieu: ${event.getVenue()}</p></div>`;
 
 		let buttonsCont = document.createElement("div");
 		buttonsCont.className = "flex";
@@ -60,13 +67,59 @@ async function getEvents(url) {
 	}
 }
 
-function viewEvent() {}
+async function getEvent(id) {
+	let response = await fetch(url + "/" + id);
+
+	if (!response.ok) {
+		throw new Error("Could not fetch event");
+	}
+
+	let event = await response.json();
+
+	if (!event) {
+		throw new Error("Could not fetch event");
+	}
+
+	openModal(event);
+}
+
+function openModal(event) {
+	popup.firstElementChild.innerHTML = `<div class='img-cont'><img src="${event.image.url}"/></div>`;
+	popup.firstElementChild.innerHTML += `<h3>${event.title}</h3>`;
+	popup.firstElementChild.innerHTML += `${event.description}`; // already comes wrapped in p
+	popup.firstElementChild.innerHTML += `<p><b>Cost:</b> ${event.cost ? event.cost : "Free"}</p>`;
+	popup.firstElementChild.innerHTML += `<p><b>Date:</b> ${event.date.cleanDate()}</p>`;
+	popup.firstElementChild.innerHTML += `<p><b>Lieu:</b> ${event.getVenue()}</p>`;
+	popup.firstElementChild.innerHTML += `<p><b>URL:</b> <a href='${event.url}' target='blank'>${event.url}</a></p>`;
+
+	let closeButton = document.createElement("span");
+	closeButton.className = "close";
+	closeButton.textContent = "X";
+	closeButton.addEventListener("click", hideModal);
+
+	popup.firstElementChild.appendChild(closeButton);
+
+	popup.classList.remove("hidden");
+}
+
+function hideModal() {
+	popup.firstElementChild.innerHTML = "";
+	popup.classList.add("hidden");
+}
+
+async function viewEvent(e) {
+	let buttonClicked = e.currentTarget;
+	let eventId = buttonClicked.parentElement.parentElement.dataset.id;
+
+	let event = await getEvent(eventId);
+}
 
 function addEvent() {}
 
 let currPage = 1;
 let eventsContainer = document.getElementById("allevents");
 let loadMore = document.getElementById("loadmore");
+let popup = document.getElementById("popup");
 
 let url = "https://demo.theeventscalendar.com/wp-json/tribe/events/v1/events";
 getEvents(url);
