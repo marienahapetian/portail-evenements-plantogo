@@ -145,6 +145,9 @@ main #allevents .card .view {
 main #allevents .card .add {
   background-color: #f5a623;
 }
+main #allevents .card .remove {
+  background-color: rgb(122, 1, 1);
+}
 main #loadmore {
   margin-top: 50px;
   display: flex;

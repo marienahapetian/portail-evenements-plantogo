@@ -7,6 +7,7 @@ $third-color: #ffe66d;
 $light-color: #f7fff7;
 $dark-color: #292f36;
 $white: #ffffff;
+$red: rgb(122, 1, 1);
 
 * {
 	font-family: "Fira sans";
@@ -159,6 +160,9 @@ main {
 			}
 			.add {
 				background-color: $secondary-color;
+			}
+			.remove {
+				background-color: $red;
 			}
 		}
 	}

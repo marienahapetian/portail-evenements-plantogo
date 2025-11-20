@@ -44,8 +44,14 @@ async function getEvents(url) {
 
 		let addButton = document.createElement("button");
 		addButton.className = "add";
-		addButton.textContent = "Ajouter";
-		addButton.addEventListener("click", addEvent);
+		if (eventAlreadyAdded(event.id)) {
+			addButton.textContent = "Supprimer";
+			addButton.classList.add("remove");
+			addButton.addEventListener("click", removeEvent);
+		} else {
+			addButton.textContent = "Ajouter";
+			addButton.addEventListener("click", addEvent);
+		}
 
 		buttonsCont.appendChild(viewButton);
 		buttonsCont.appendChild(addButton);
@@ -114,12 +120,54 @@ async function viewEvent(e) {
 	let event = await getEvent(eventId);
 }
 
-function addEvent() {}
+function addEvent(e) {
+	let buttonClicked = e.currentTarget;
+	let eventId = buttonClicked.parentElement.parentElement.dataset.id;
+
+	let events = getMyEvents();
+	console.log(events, eventId);
+	events.push(eventId);
+
+	localStorage.setItem("myevents", JSON.stringify(events));
+
+	buttonClicked.removeEventListener("click", addEvent);
+	buttonClicked.textContent = "Supprimer";
+	buttonClicked.classList.add("remove");
+	buttonClicked.addEventListener("click", removeEvent);
+}
+
+function removeEvent(e) {
+	let buttonClicked = e.currentTarget;
+	let eventId = buttonClicked.parentElement.parentElement.dataset.id;
+
+	let events = getMyEvents();
+	console.log(events, eventId);
+	events.splice(events.indexOf(eventId), 1);
+
+	localStorage.setItem("myevents", JSON.stringify(events));
+
+	buttonClicked.removeEventListener("click", removeEvent);
+	buttonClicked.classList.remove("remove");
+	buttonClicked.textContent = "Ajouter";
+	buttonClicked.addEventListener("click", addEvent);
+}
+
+function getMyEvents() {
+	return localStorage.getItem("myevents") ? JSON.parse(localStorage.getItem("myevents")) : [];
+}
+
+function eventAlreadyAdded(eventId) {
+	return getMyEvents().includes(eventId.toString());
+}
 
 let currPage = 1;
 let eventsContainer = document.getElementById("allevents");
 let loadMore = document.getElementById("loadmore");
 let popup = document.getElementById("popup");
+
+let myEvents = getMyEvents();
+
+console.log("myevents", myEvents);
 
 let url = "https://demo.theeventscalendar.com/wp-json/tribe/events/v1/events";
 getEvents(url);
