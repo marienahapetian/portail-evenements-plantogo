@@ -32,21 +32,23 @@ header h1 {
   font-weight: 400;
   margin: 0;
 }
-header #toggle {
+header #theme-toggle {
   height: 36px;
   width: 100px;
   border: 1px solid #292f36;
   border-radius: 25px;
   cursor: pointer;
 }
-header #toggle::before {
+header #theme-toggle::before {
   content: "";
   display: inline-block;
   border-radius: 25px;
   width: 25px;
   height: 25px;
   background-color: #292f36;
-  margin-left: 8px;
+  left: 8px;
+  position: relative;
+  transition: all 0.2s linear;
 }
 
 footer {
@@ -64,7 +66,6 @@ footer {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(255, 255, 255, 0.8);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -185,11 +186,17 @@ body.theme-light header,
 body.theme-light footer {
   background-color: #f7fff7;
 }
+body.theme-light #popup {
+  background: rgba(255, 255, 255, 0.8);
+}
 body.theme-light #website-name {
   color: #4ecdc4;
 }
-body.theme-light #toggle {
+body.theme-light #theme-toggle {
   background-color: #ffffff;
+}
+body.theme-light #theme-toggle #theme-toggle::before {
+  left: 8px;
 }
 
 body.theme-dark {
@@ -199,13 +206,19 @@ body.theme-dark header,
 body.theme-dark footer {
   background-color: #4ecdc4;
 }
+body.theme-dark #theme-toggle::before {
+  left: calc(100% - 8px - 25px);
+}
+body.theme-dark #popup {
+  background: rgba(0, 0, 0, 0.8);
+}
 body.theme-dark #popup > :first-child {
   box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.25);
 }
 body.theme-dark #website-name {
   color: #292f36;
 }
-body.theme-dark #toggle {
+body.theme-dark #theme-toggle {
   background-color: #f5a623;
 }
 

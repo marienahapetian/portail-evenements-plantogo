@@ -164,6 +164,36 @@ function eventAlreadyAdded(eventId) {
 	return getMyEvents().includes(eventId.toString());
 }
 
+function switchTheme() {
+	if (document.body.className == "theme-dark") {
+		document.body.className = "theme-light";
+		document.cookie = "theme=theme-light";
+	} else {
+		document.body.className = "theme-dark";
+		document.cookie = "theme=theme-dark";
+	}
+}
+
+function getTheme() {
+	return getCookie("theme") ? getCookie("theme") : "theme-light";
+}
+
+function getCookie(cname) {
+	let name = cname + "=";
+	let decodedCookie = decodeURIComponent(document.cookie);
+	let ca = decodedCookie.split(";");
+	for (let i = 0; i < ca.length; i++) {
+		let c = ca[i];
+		while (c.charAt(0) == " ") {
+			c = c.substring(1);
+		}
+		if (c.indexOf(name) == 0) {
+			return c.substring(name.length, c.length);
+		}
+	}
+	return "";
+}
+
 function updatePlanning() {}
 
 let currPage = 1;
@@ -173,6 +203,7 @@ let planningPage = document.getElementById("myevents");
 let loadMore = document.getElementById("loadmore");
 let popup = document.getElementById("popup");
 let planningToggle = document.getElementById("planning-toggle");
+let themeToggle = document.getElementById("theme-toggle");
 
 planningToggle.addEventListener("click", function () {
 	if (this.textContent == "Mon Planning") {
@@ -185,6 +216,10 @@ planningToggle.addEventListener("click", function () {
 		planningPage.classList.add("hidden");
 	}
 });
+
+themeToggle.addEventListener("click", switchTheme);
+
+document.body.className = getTheme();
 
 let myEvents = getMyEvents();
 
