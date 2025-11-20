@@ -11,6 +11,7 @@ $white: #ffffff;
 * {
 	font-family: "Fira sans";
 	box-sizing: border-box;
+	margin: 0;
 }
 body {
 	margin: 0;
@@ -63,6 +64,67 @@ footer {
 	padding: 61px;
 }
 
+main {
+	padding: 56px 87px;
+
+	#allevents {
+		gap: 56px;
+		.card {
+			background-color: $light-color;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			width: 313px;
+			min-height: 313px;
+			padding: 18px 12px;
+			border: 1px solid $primary-color;
+
+			> div:first-child {
+				display: flex;
+				flex-direction: column;
+				gap: 17px;
+			}
+
+			h2 {
+				color: $primary-color;
+				font-size: 24px;
+				margin: 0;
+			}
+
+			button {
+				font-size: 16px;
+				color: $light-color;
+				padding: 5.5px;
+				border: none;
+				cursor: pointer;
+			}
+			.view {
+				background-color: $primary-color;
+				margin-bottom: 17px;
+			}
+			.add {
+				background-color: $secondary-color;
+			}
+		}
+	}
+
+	#loadmore {
+		margin-top: 50px;
+		display: flex;
+		justify-content: center;
+
+		button {
+			background-color: $secondary-color;
+			color: $dark-color;
+			padding: 5px 15px;
+			border: none;
+			border-radius: 5px;
+			font-size: 20px;
+			cursor: pointer;
+		}
+	}
+}
+
 body.theme-light {
 	background-color: $white;
 
@@ -102,10 +164,17 @@ body.theme-dark {
 }
 .flex {
 	display: flex;
+	flex-wrap: wrap;
+}
+.dir-col {
+	flex-direction: column;
 }
 .centered {
 	align-items: center;
 	justify-content: center;
+}
+.space-around {
+	justify-content: space-around;
 }
 .centered-v {
 	align-items: center;
