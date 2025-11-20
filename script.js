@@ -165,12 +165,15 @@ function eventAlreadyAdded(eventId) {
 }
 
 function switchTheme() {
+	var now = new Date();
+	var expiryDate = now.setFullYear(now.getFullYear() + 1);
+	now.setTime(expiryDate);
 	if (document.body.className == "theme-dark") {
 		document.body.className = "theme-light";
-		document.cookie = "theme=theme-light";
+		document.cookie = "theme=theme-light; expires=" + now.toUTCString() + ";path=/";
 	} else {
 		document.body.className = "theme-dark";
-		document.cookie = "theme=theme-dark";
+		document.cookie = "theme=theme-dark; expires=" + now.toUTCString() + ";path=/";
 	}
 }
 
@@ -182,6 +185,7 @@ function getCookie(cname) {
 	let name = cname + "=";
 	let decodedCookie = decodeURIComponent(document.cookie);
 	let ca = decodedCookie.split(";");
+
 	for (let i = 0; i < ca.length; i++) {
 		let c = ca[i];
 		while (c.charAt(0) == " ") {
