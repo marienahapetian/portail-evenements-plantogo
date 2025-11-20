@@ -105,10 +105,25 @@ footer {
   display: none;
 }
 
+#planning-toggle {
+  position: fixed;
+  right: 20px;
+  top: 30vh;
+  background: #ffe66d;
+  border-radius: 25px;
+  border: 1px solid #4ecdc4;
+  height: 79px;
+  padding: 0 20px;
+  text-align: center;
+  line-height: 79px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
 main {
   padding: 56px 87px;
 }
-main #allevents {
+main #allevents > :first-child {
   gap: 56px;
 }
 main #allevents .card {
@@ -195,7 +210,7 @@ body.theme-dark #toggle {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 .flex {

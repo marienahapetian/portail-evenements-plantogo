@@ -134,6 +134,8 @@ function addEvent(e) {
 	buttonClicked.textContent = "Supprimer";
 	buttonClicked.classList.add("remove");
 	buttonClicked.addEventListener("click", removeEvent);
+
+	updatePlanning();
 }
 
 function removeEvent(e) {
@@ -150,6 +152,8 @@ function removeEvent(e) {
 	buttonClicked.classList.remove("remove");
 	buttonClicked.textContent = "Ajouter";
 	buttonClicked.addEventListener("click", addEvent);
+
+	updatePlanning();
 }
 
 function getMyEvents() {
@@ -160,10 +164,27 @@ function eventAlreadyAdded(eventId) {
 	return getMyEvents().includes(eventId.toString());
 }
 
+function updatePlanning() {}
+
 let currPage = 1;
-let eventsContainer = document.getElementById("allevents");
+let eventsContainer = document.getElementById("allevents").firstElementChild;
+let eventsPage = document.getElementById("allevents");
+let planningPage = document.getElementById("myevents");
 let loadMore = document.getElementById("loadmore");
 let popup = document.getElementById("popup");
+let planningToggle = document.getElementById("planning-toggle");
+
+planningToggle.addEventListener("click", function () {
+	if (this.textContent == "Mon Planning") {
+		this.textContent = "Toutes les evennements";
+		eventsPage.classList.add("hidden");
+		planningPage.classList.remove("hidden");
+	} else {
+		this.textContent = "Mon Planning";
+		eventsPage.classList.remove("hidden");
+		planningPage.classList.add("hidden");
+	}
+});
 
 let myEvents = getMyEvents();
 

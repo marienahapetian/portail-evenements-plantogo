@@ -120,11 +120,29 @@ footer {
 	display: none;
 }
 
+#planning-toggle {
+	position: fixed;
+	right: 20px;
+	top: 30vh;
+	background: $third-color;
+	border-radius: 25px;
+	border: 1px solid $primary-color;
+	height: 79px;
+	// width: 164px;
+	padding: 0 20px;
+	text-align: center;
+	line-height: 79px;
+	font-size: 20px;
+	cursor: pointer;
+}
+
 main {
 	padding: 56px 87px;
 
 	#allevents {
-		gap: 56px;
+		> :first-child {
+			gap: 56px;
+		}
 		.card {
 			background-color: $light-color;
 			display: flex;
@@ -225,7 +243,7 @@ body.theme-dark {
 }
 
 .hidden {
-	display: none;
+	display: none !important;
 }
 .flex {
 	display: flex;
