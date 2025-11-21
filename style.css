@@ -124,10 +124,7 @@ footer {
 main {
   padding: 56px 87px;
 }
-main #allevents > :first-child {
-  gap: 56px;
-}
-main #allevents .card {
+main .card {
   background-color: #f7fff7;
   display: flex;
   flex-direction: column;
@@ -137,32 +134,41 @@ main #allevents .card {
   padding: 18px 12px;
   border: 1px solid #4ecdc4;
 }
-main #allevents .card > div:first-child {
+main .card > div:first-child {
   display: flex;
   flex-direction: column;
   gap: 17px;
 }
-main #allevents .card h2 {
+main .card h2 {
   color: #4ecdc4;
   font-size: 24px;
   margin: 0;
 }
-main #allevents .card button {
+main .card button {
   font-size: 16px;
   color: #f7fff7;
   padding: 5.5px;
   border: none;
   cursor: pointer;
 }
-main #allevents .card .view {
+main .card .view {
   background-color: #4ecdc4;
   margin-bottom: 17px;
 }
-main #allevents .card .add {
+main .card .add {
   background-color: #f5a623;
 }
-main #allevents .card .remove {
+main .card .remove {
   background-color: rgb(122, 1, 1);
+}
+main #allevents > :first-child {
+  gap: 56px;
+}
+main #myevents > h2 {
+  margin-bottom: 20px;
+}
+main #myevents > :last-child {
+  gap: 56px;
 }
 main #loadmore {
   margin-top: 50px;
@@ -221,6 +227,9 @@ body.theme-dark #website-name {
 body.theme-dark #theme-toggle {
   background-color: #f5a623;
 }
+body.theme-dark #myevents > h2 {
+  color: #f5a623;
+}
 
 .hidden {
   display: none !important;
@@ -238,6 +247,7 @@ body.theme-dark #theme-toggle {
 .centered {
   align-items: center;
   justify-content: center;
+  text-align: center;
 }
 
 .space-around {

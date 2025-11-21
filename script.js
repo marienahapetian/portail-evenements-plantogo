@@ -29,35 +29,7 @@ async function getEvents(url) {
 	console.log("events", eventsToShow);
 
 	eventsToShow.forEach((event) => {
-		let card = document.createElement("div");
-		card.dataset.id = event.id;
-		card.className = "card";
-		card.innerHTML = `<div><h2>${event.title}</h2><p>Date: ${event.date.cleanDate()}</p><p>Lieu: ${event.getVenue()}</p></div>`;
-
-		let buttonsCont = document.createElement("div");
-		buttonsCont.className = "flex";
-		buttonsCont.classList.add("dir-col");
-		let viewButton = document.createElement("button");
-		viewButton.className = "view";
-		viewButton.textContent = "Afficher les détails";
-		viewButton.addEventListener("click", viewEvent);
-
-		let addButton = document.createElement("button");
-		addButton.className = "add";
-		if (eventAlreadyAdded(event.id)) {
-			addButton.textContent = "Supprimer";
-			addButton.classList.add("remove");
-			addButton.addEventListener("click", removeEvent);
-		} else {
-			addButton.textContent = "Ajouter";
-			addButton.addEventListener("click", addEvent);
-		}
-
-		buttonsCont.appendChild(viewButton);
-		buttonsCont.appendChild(addButton);
-
-		card.appendChild(buttonsCont);
-		eventsContainer.appendChild(card);
+		eventsContainer.appendChild(createEventCard(event));
 	});
 
 	loadMore.innerHTML = "";
@@ -71,6 +43,47 @@ async function getEvents(url) {
 		});
 		loadMore.appendChild(loadMoreButton);
 	}
+}
+
+// used both on all events and planning page
+function createEventCard(event) {
+	let card = document.createElement("div");
+	card.dataset.id = event.id;
+	card.className = "card";
+	let infoCont = document.createElement("div");
+	infoCont.className = "flex";
+	infoCont.classList.add("dir-col");
+
+	infoCont.innerHTML = `<h2>${event.title}</h2>`;
+	if (event.date) infoCont.innerHTML += `<p>Date: <span class='date'>${event.date.cleanDate()}</span></p>`;
+	if (event.venue) infoCont.innerHTML += `<p>Lieu: <span class='venue'>${event.getVenue()}</span></p>`;
+	card.appendChild(infoCont);
+
+	let buttonsCont = document.createElement("div");
+	buttonsCont.className = "flex";
+	buttonsCont.classList.add("dir-col");
+	let viewButton = document.createElement("button");
+	viewButton.className = "view";
+	viewButton.textContent = "Afficher les détails";
+	viewButton.addEventListener("click", viewEvent);
+
+	let addButton = document.createElement("button");
+	addButton.className = "add";
+	if (eventAlreadyAdded(event.id)) {
+		addButton.textContent = "Supprimer";
+		addButton.classList.add("remove");
+		addButton.addEventListener("click", removeEvent);
+	} else {
+		addButton.textContent = "Ajouter";
+		addButton.addEventListener("click", addEvent);
+	}
+
+	buttonsCont.appendChild(viewButton);
+	buttonsCont.appendChild(addButton);
+
+	card.appendChild(buttonsCont);
+
+	return card;
 }
 
 async function getEvent(id) {
@@ -122,22 +135,31 @@ async function viewEvent(e) {
 
 function addEvent(e) {
 	let buttonClicked = e.currentTarget;
-	let eventId = buttonClicked.parentElement.parentElement.dataset.id;
+	let card = buttonClicked.parentElement.parentElement;
+	let eventId = card.dataset.id;
 
-	let events = getMyEvents();
-	console.log(events, eventId);
-	events.push(eventId);
+	if (!eventAlreadyAdded(eventId)) {
+		let eventTitle = card.querySelector("h2").textContent;
+		let eventDate = card.querySelector(".date").textContent;
+		let eventVenue = card.querySelector(".venue").textContent;
 
-	localStorage.setItem("myevents", JSON.stringify(events));
+		let event = { id: eventId, title: eventTitle, date: eventDate, venue: { venue: eventVenue } };
+		let events = getMyEvents();
+		console.log(events, event);
+		events.push(event);
 
-	buttonClicked.removeEventListener("click", addEvent);
-	buttonClicked.textContent = "Supprimer";
-	buttonClicked.classList.add("remove");
-	buttonClicked.addEventListener("click", removeEvent);
+		localStorage.setItem("myevents", JSON.stringify(events));
 
-	updatePlanning();
+		buttonClicked.removeEventListener("click", addEvent);
+		buttonClicked.textContent = "Supprimer";
+		buttonClicked.classList.add("remove");
+		buttonClicked.addEventListener("click", removeEvent);
+
+		updatePlanning();
+	}
 }
 
+// can be clicked both from all events page and planning
 function removeEvent(e) {
 	let buttonClicked = e.currentTarget;
 	let eventId = buttonClicked.parentElement.parentElement.dataset.id;
@@ -148,10 +170,14 @@ function removeEvent(e) {
 
 	localStorage.setItem("myevents", JSON.stringify(events));
 
-	buttonClicked.removeEventListener("click", removeEvent);
-	buttonClicked.classList.remove("remove");
-	buttonClicked.textContent = "Ajouter";
-	buttonClicked.addEventListener("click", addEvent);
+	let eventCards = document.querySelectorAll(".card[data-id='" + eventId + "']");
+	eventCards.forEach((card) => {
+		let buttonToActivate = card.querySelector(".add");
+		buttonToActivate.removeEventListener("click", removeEvent);
+		buttonToActivate.classList.remove("remove");
+		buttonToActivate.textContent = "Ajouter";
+		buttonToActivate.addEventListener("click", addEvent);
+	});
 
 	updatePlanning();
 }
@@ -161,7 +187,7 @@ function getMyEvents() {
 }
 
 function eventAlreadyAdded(eventId) {
-	return getMyEvents().includes(eventId.toString());
+	return getMyEvents().find((event) => event.id == eventId);
 }
 
 function switchTheme() {
@@ -198,12 +224,20 @@ function getCookie(cname) {
 	return "";
 }
 
-function updatePlanning() {}
+function updatePlanning() {
+	planningContainer.innerHTML = "";
+	let myEvents = getMyEvents();
+
+	myEvents.forEach((event) => {
+		planningContainer.appendChild(createEventCard(event));
+	});
+}
 
 let currPage = 1;
-let eventsContainer = document.getElementById("allevents").firstElementChild;
 let eventsPage = document.getElementById("allevents");
+let eventsContainer = eventsPage.firstElementChild;
 let planningPage = document.getElementById("myevents");
+let planningContainer = planningPage.lastElementChild;
 let loadMore = document.getElementById("loadmore");
 let popup = document.getElementById("popup");
 let planningToggle = document.getElementById("planning-toggle");
@@ -226,6 +260,7 @@ themeToggle.addEventListener("click", switchTheme);
 document.body.className = getTheme();
 
 let myEvents = getMyEvents();
+updatePlanning();
 
 console.log("myevents", myEvents);
 
